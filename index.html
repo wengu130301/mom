@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>母亲节 · 公主妈妈的时光礼物 | 文文の成长影集</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ----- 整体基调：温柔粉，母亲节氛围 ----- */
+        body {
+            background: linear-gradient(145deg, #fff7f0 0%, #ffe6de 100%);
+            font-family: 'Segoe UI', 'Roboto', 'Poppins', 'Noto Sans', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+            color: #3e2c2a;
+            min-height: 100vh;
+        }
+
+        /* ------------------- 密码界面 (全屏粉色梦幻) ------------------ */
+        .password-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffded5;  /* 中粉色基调 */
+            background: radial-gradient(circle at 30% 20%, #ffe0d4, #ffcbbc);
+            backdrop-filter: blur(2px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.45s ease;
+        }
+
+        .password-card {
+            background: rgba(255, 245, 240, 0.96);
+            border-radius: 64px;
+            padding: 2.5rem 2rem 2.8rem;
+            width: 90%;
+            max-width: 460px;
+            text-align: center;
+            box-shadow: 0 30px 40px rgba(150, 70, 50, 0.2);
+            border: 1px solid #ffe2d0;
+            backdrop-filter: blur(8px);
+        }
+
+        .password-card h2 {
+            font-size: 2rem;
+            color: #bd6b51;
+            margin-bottom: 0.6rem;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .password-card .lock-icon {
+            font-size: 3.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .password-card p {
+            color: #b96b51;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .password-input {
+            width: 85%;
+            padding: 14px 20px;
+            font-size: 1rem;
+            background: #fffaf5;   /* 淡粉色背景 */
+            border: 1.5px solid #ffcfbb;
+            border-radius: 60px;
+            outline: none;
+            text-align: center;
+            color: #a75238;
+            font-weight: 500;
+            transition: 0.2s;
+            margin-bottom: 1.2rem;
+        }
+
+        .password-input:focus {
+            border-color: #e69373;
+            box-shadow: 0 0 0 3px rgba(229, 130, 90, 0.15);
+        }
+
+        .password-btn {
+            background: #dd9b81;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 5px 12px rgba(170, 85, 55, 0.2);
+            width: 70%;
+        }
+
+        .password-btn:hover {
+            background: #cc8267;
+            transform: scale(0.97);
+        }
+
+        .error-msg {
+            color: #dc7a55;
+            font-size: 0.8rem;
+            margin-top: 12px;
+            min-height: 2rem;
+            font-weight: 500;
+        }
+
+        /* ------------------- 主内容区域 (未解锁时不可见) ------------------ */
+        .main-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .main-content.show {
+            display: block;
+            opacity: 1;
+        }
+
+        /* ----- 原有样式微调，保留相册风格 ----- */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 3rem;
+        }
+
+        /* 头部贺卡区 */
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        .hero::before {
+            content: "🌷";
+            font-size: 3.5rem;
+            opacity: 0.2;
+            position: absolute;
+            left: 5%;
+            top: -10px;
+            transform: rotate(-15deg);
+            pointer-events: none;
+        }
+        .hero::after {
+            content: "🌸";
+            font-size: 3rem;
+            opacity: 0.25;
+            position: absolute;
+            right: 6%;
+            bottom: -20px;
+            pointer-events: none;
+        }
+        .hero h1 {
+            font-size: 2.6rem;
+            background: linear-gradient(135deg, #c76e5a, #e6a17a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 12px rgba(199, 110, 90, 0.15);
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+        }
+        .hero .sub {
+            font-size: 1.2rem;
+            color: #b45f4b;
+            background: rgba(255, 245, 235, 0.7);
+            display: inline-block;
+            padding: 0.4rem 1.8rem;
+            border-radius: 60px;
+            backdrop-filter: blur(3px);
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+        .hero .greeting {
+            margin-top: 1.2rem;
+            font-size: 1.05rem;
+            max-width: 550px;
+            margin-left: auto;
+            margin-right: auto;
+            background: #fff3ed;
+            padding: 0.9rem 1.8rem;
+            border-radius: 48px;
+            color: #a1553e;
+            line-height: 1.4;
+            border: 1px solid #ffe0d0;
+        }
+        .hero .greeting span {
+            display: inline-block;
+            animation: floatHeart 2s infinite ease;
+        }
+        @keyframes floatHeart {
+            0% { transform: translateY(0px);}
+            50% { transform: translateY(-3px);}
+            100% { transform: translateY(0px);}
+        }
+
+        /* 相册网格 */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 2rem 1.8rem;
+            margin: 2.5rem 0 2rem;
+        }
+
+        .photo-card {
+            background: #fffef8;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 12px 25px rgba(99, 57, 44, 0.08);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid rgba(255, 215, 195, 0.6);
+        }
+        .photo-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 22px 32px rgba(110, 65, 50, 0.12);
+        }
+
+        .img-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: #fae9df;
+            overflow: hidden;
+            border-bottom: 2px solid #ffe2d0;
+        }
+        .img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+        .photo-card:hover .img-wrapper img {
+            transform: scale(1.03);
+        }
+
+        .card-info {
+            padding: 1rem 1rem 1.2rem;
+            text-align: center;
+        }
+        .age {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(120deg, #cd7b62, #bd674d);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+            margin-bottom: 0.25rem;
+        }
+        .age small {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #b6725a;
+        }
+        .mom-note {
+            font-size: 0.85rem;
+            color: #bf7e64;
+            margin-top: 0.45rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: #fef3ec;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0.2rem 0.9rem;
+            border-radius: 40px;
+        }
+
+        /* 祝福信专区 — 给妈妈公主的长段话 */
+        .blessing-letter {
+            background: #fff5ef;
+            border-radius: 56px;
+            padding: 2.2rem 2rem;
+            margin: 2rem 0 1.5rem;
+            border: 1px solid #ffe2cf;
+            box-shadow: 0 12px 20px rgba(130, 70, 50, 0.06);
+        }
+        .blessing-letter h3 {
+            font-size: 1.8rem;
+            color: #bc7158;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .blessing-letter .letter-content {
+            font-size: 1.08rem;
+            line-height: 1.75;
+            color: #5b3c31;
+            text-align: justify;
+            font-weight: 450;
+        }
+        .letter-content p {
+            margin-bottom: 1rem;
+        }
+        .signature {
+            margin-top: 1.2rem;
+            text-align: right;
+            font-family: 'Segoe UI', cursive;
+            font-size: 1.15rem;
+            color: #b96145;
+            font-weight: 500;
+            border-top: 2px dotted #ffd7c3;
+            padding-top: 1rem;
+        }
+
+        /* 下载按钮区 */
+        .download-area {
+            text-align: center;
+            margin: 1.5rem 0 2rem;
+        }
+        .custom-download-btn {
+            background: linear-gradient(120deg, #e3a088, #cc8267);
+            border: none;
+            padding: 14px 32px;
+            border-radius: 80px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(184, 92, 59, 0.3);
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        .custom-download-btn:hover {
+            background: linear-gradient(120deg, #d08567, #b86a4e);
+            transform: scale(0.97);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* 页脚调整（去除命名格式和自动显示那句话） */
+        .footer-note {
+            margin-top: 2rem;
+            text-align: center;
+            background: #fff2ea;
+            border-radius: 60px;
+            padding: 1.2rem 1.5rem;
+            border: 1px solid #ffe1cf;
+        }
+        .footer-note p {
+            color: #b36248;
+            font-size: 0.9rem;
+            margin: 0.3rem 0;
+        }
+        .heart-line {
+            margin: 0.5rem 0 0.2rem;
+            font-size: 1.4rem;
+            letter-spacing: 4px;
+        }
+        .copyright {
+            font-size: 0.7rem;
+            color: #cfaa9a;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 1.2rem 1rem 2rem;
+            }
+            .hero h1 {
+                font-size: 1.9rem;
+            }
+            .gallery {
+                gap: 1.3rem;
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+            .blessing-letter {
+                padding: 1.5rem;
+            }
+            .blessing-letter h3 {
+                font-size: 1.5rem;
+            }
+            .letter-content {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 密码锁屏界面 (中粉色/淡粉输入框) -->
+<div id="passwordOverlay" class="password-overlay">
+    <div class="password-card">
+        <div class="lock-icon">🌷🔐🌷</div>
+        <h2>✨ 专属礼物 ✨</h2>
+        <p>输入秘密口令，拆开时光回忆</p>
+        <input type="password" id="pwdInput" class="password-input" placeholder="请输入密码" autocomplete="off">
+        <button id="unlockBtn" class="password-btn">🌸 打开回忆相册 🌸</button>
+        <div id="pwdError" class="error-msg"></div>
+    </div>
+</div>
+
+<!-- 主内容（照片集 + 祝福 + 下载按钮）初始隐藏 -->
+<div id="mainContent" class="main-content">
+    <div class="container">
+        <!-- 头部不变，温馨母亲节致辞 -->
+        <div class="hero">
+            <h1>👑 致亲爱的妈妈公主 👑</h1>
+            <div class="sub">Mother's Day · 文文的时光影像诗</div>
+            <div class="greeting">
+                <span>💖</span> 从1岁到13岁，每一个脚印都有您的守护。<br>
+                谢谢您，我的妈妈公主！文文永远爱您 <span>💖</span>
+            </div>
+        </div>
+
+        <!-- 相册网格: 1~13岁照片预留位置 -->
+        <div id="photoGrid" class="gallery">
+            <!-- 动态生成照片卡片，占位符自动显示 -->
+            <div class="loading-tip" style="text-align:center; padding:2rem;">✨ 正在为您翻开时光相册 ✨</div>
+        </div>
+
+        <!-- ★ 13岁之后的大段祝福（妈妈公主&文文）★ -->
+        <div class="blessing-letter">
+            <h3>📜 给妈妈公主的一封信 📜</h3>
+            <div class="letter-content">
+                <p>亲爱的妈妈公主：</p>
+                <p>今天又是属于您的节日——母亲节。当文文打开这本小小的“1岁到13岁”影像集时，每一张照片背后都仿佛听见您温柔的笑声，看到您帮我整理衣角、牵着我的手走过春夏秋冬。在我心中，您从来不只是妈妈，更是永远闪闪发光的“妈妈公主”。您的笑容像春天的花瓣，您的怀抱是我最安稳的城堡。</p>
+                <p>记得我刚刚学会走路，您张开双臂鼓励我向前；第一次拿起画笔，把家里涂得花花绿绿，您却把我的“大作”贴在客厅最显眼的地方；下雨天您总是把伞倾向我这侧，自己的肩膀淋湿了还笑着说“文文不淋雨就好”。那些最平凡的日子，因为您的陪伴，变成了记忆里最甜的糖果🍬。</p>
+                <p>现在我13岁了，眉宇间有了少年的模样，可无论多大，在您面前我永远是那个想撒娇的“文文”。谢谢您包容我的小脾气，熬夜为我准备生日惊喜，听我讲学校的琐碎日常。妈妈公主，您值得全世界最温柔的风、最皎洁的月光，还有我全心全意的爱。愿时光对您偏心一点，让您永远健康、优雅、快乐，像公主一样被岁月宠爱。</p>
+                <p>母亲节快乐，我最美的妈妈公主！以后的每一个岁岁年年，换文文来守护您。</p>
+            </div>
+            <div class="signature">
+                💌 永远爱您的：文文 · 敬上 💌
+            </div>
+        </div>
+
+        <!-- 下载按钮区域 (文案不直接写“下载App”) -->
+        <div class="download-area">
+            <a id="downloadAppLink" class="custom-download-btn" href="https://www.pgyer.com/mom-ios" target="_blank" rel="noopener noreferrer">
+                📱 为妈妈公主定制 · 移动相册 ✨
+            </a>
+            <p style="font-size: 0.75rem; color: #bb8875; margin-top: 8px;">点击即可珍藏这份时光礼物 | 陪伴永远在线</p>
+        </div>
+
+        <!-- 页脚区域，已去除命名格式和自动显示占位那句话 -->
+        <div class="footer-note">
+            <div class="heart-line">🌹 👩‍👦 🌹</div>
+            <p>💝 妈妈，这是我用心准备的母亲节礼物 — 属于我们的成长纪念册 💝</p>
+            <p>📸 照片位置已为您预留：将1岁至13岁代表性照片按顺序命名，并放入同一文件夹（文文的照片集）</p>
+            <p class="copyright">⭐ 每张照片都是时光的收藏，点击即可放大回忆 ⭐</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ======================== 密码逻辑 ==========================
+        const overlay = document.getElementById('passwordOverlay');
+        const mainDiv = document.getElementById('mainContent');
+        const unlockBtn = document.getElementById('unlockBtn');
+        const pwdInput = document.getElementById('pwdInput');
+        const errorMsgDiv = document.getElementById('pwdError');
+
+        const CORRECT_PASSWORD = "祝小芳公主永远开心";  // 精确匹配密码
+
+        function unlockAndShow() {
+            const enteredPwd = pwdInput.value.trim();
+            if (enteredPwd === CORRECT_PASSWORD) {
+                // 正确，隐藏遮罩层，显示主内容
+                overlay.style.display = 'none';
+                mainDiv.classList.add('show');
+                // 可选: 让body滚动正常
+                document.body.style.overflow = 'auto';
+            } else {
+                errorMsgDiv.innerText = '❀ 密码不对噢 ~ 再想想妈妈公主的专属口令吧 ❀';
+                pwdInput.value = '';
+                pwdInput.focus();
+            }
+        }
+
+        unlockBtn.addEventListener('click', unlockAndShow);
+        pwdInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                unlockAndShow();
+            }
+        });
+
+        // 防止初始主内容泄露，确保隐藏
+        mainDiv.classList.remove('show');
+        if (overlay) {
+            overlay.style.display = 'flex';
+        }
+        document.body.style.overflow = 'hidden';  // 锁屏时禁止滚动
+
+        // 解锁后恢复滚动
+        const originalOverflow = document.body.style.overflow;
+        // 但解锁后再恢复, 在unlockAndShow设置
+        const originalUnlock = unlockAndShow;
+        window.unlockAndShow = function() {
+            originalUnlock();
+            document.body.style.overflow = '';
+        };
+        unlockBtn.onclick = () => {
+            const entered = pwdInput.value.trim();
+            if (entered === CORRECT_PASSWORD) {
+                overlay.style.display = 'none';
+                mainDiv.classList.add('show');
+                document.body.style.overflow = '';
+                errorMsgDiv.innerText = '';
+            } else {
+                errorMsgDiv.innerText = '❀ 密码不对噢 ~ 再想想妈妈公主的专属口令吧 ❀';
+                pwdInput.value = '';
+                pwdInput.focus();
+            }
+        };
+        pwdInput.onkeypress = (e) => {
+            if (e.key === 'Enter') {
+                const entered = pwdInput.value.trim();
+                if (entered === CORRECT_PASSWORD) {
+                    overlay.style.display = 'none';
+                    mainDiv.classList.add('show');
+                    document.body.style.overflow = '';
+                    errorMsgDiv.innerText = '';
+                } else {
+                    errorMsgDiv.innerText = '❀ 密码不对噢 ~ 再想想妈妈公主的专属口令吧 ❀';
+                    pwdInput.value = '';
+                    pwdInput.focus();
+                }
+            }
+        };
+
+        // ======================== 相册生成 (预留照片001.png~013.png) ========================
+        const START_AGE = 1;
+        const END_AGE = 13;
+        const TOTAL_COUNT = END_AGE - START_AGE + 1; // 13
+
+        function getPhotoFileName(age) {
+            const padded = String(age).padStart(3, '0');
+            return `${padded}.png`;
+        }
+
+        // 优雅的SVG占位（保留年龄信息，提醒可放置照片）
+        function createPlaceholderSVG(age) {
+            const bgGradStart = '#FFE1D0';
+            const bgGradEnd = '#FFCFB4';
+            const iconColor = '#D98967';
+            const textColor = '#B2583A';
+            let emojiMark = '';
+            if (age <= 3) emojiMark = '🍼👶';
+            else if (age <= 6) emojiMark = '🧸🎈';
+            else if (age <= 9) emojiMark = '📚⚽';
+            else if (age <= 12) emojiMark = '🎨🎧';
+            else emojiMark = '✨🌟';
+            const remindText = '等待专属照片✨ 放入即可显示';
+            return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="gradBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="${bgGradStart}" />
+                        <stop offset="100%" stop-color="${bgGradEnd}" />
+                    </linearGradient>
+                    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+                        <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.1" />
+                    </filter>
+                </defs>
+                <rect width="400" height="400" fill="url(#gradBg)" rx="24" ry="24" />
+                <circle cx="70" cy="80" r="12" fill="#FFB48A" opacity="0.4" />
+                <circle cx="330" cy="310" r="18" fill="#FFB48A" opacity="0.3" />
+                <circle cx="310" cy="70" r="9" fill="#FFC69E" opacity="0.5" />
+                <circle cx="80" cy="320" r="14" fill="#FFD0B0" opacity="0.35" />
+                <rect x="90" y="110" width="220" height="200" rx="28" fill="#FFF8F2" stroke="#E6B08E" stroke-width="1.8" stroke-dasharray="6 4" filter="url(#softShadow)"/>
+                <text x="200" y="185" font-family="'Segoe UI','Poppins',sans-serif" font-size="56" font-weight="bold" fill="${iconColor}" text-anchor="middle" dominant-baseline="middle">📷</text>
+                <text x="200" y="240" font-family="'Segoe UI','Poppins',sans-serif" font-size="28" font-weight="bold" fill="${textColor}" text-anchor="middle" dominant-baseline="middle">${age}岁</text>
+                <text x="200" y="280" font-family="'Segoe UI',sans-serif" font-size="16" fill="#C27D60" text-anchor="middle" dominant-baseline="middle">${emojiMark}</text>
+                <text x="200" y="340" font-family="'Segoe UI',sans-serif" font-size="14" fill="#B87C5E" text-anchor="middle" dominant-baseline="middle">${remindText}</text>
+                <text x="340" y="370" font-size="28" fill="#E99F7E" opacity="0.8">❤️</text>
+                <text x="50" y="55" font-size="28" fill="#F0A787" opacity="0.7">🌸</text>
+            </svg>`;
+        }
+
+        function getMomMessageByAge(age) {
+            const messages = {
+                1: '🌱 第一声“妈妈”，世界开满花',
+                2: '🐣 摇摇摆摆的拥抱，您一直牵着我的小手',
+                3: '🎨 第一次涂鸦，您把它当作珍宝收藏',
+                4: '🚲 您帮我把稳车把，教我勇敢向前',
+                5: '📖 睡前故事里的温柔，永远是我安睡的港湾',
+                6: '🎂 每年生日您做的蛋糕，全世界最甜的味道',
+                7: '✏️ 作业本上的签字，藏着默默的陪伴',
+                8: '⚽ 为我加油的呐喊，比阳光更暖',
+                9: '🎒 风雨无阻的接送，您的身影最安心',
+                10: '📸 每一张照片背后，都是您深情的目光',
+                11: '🎧 我的小秘密，第一个就想告诉您',
+                12: '💪 青春路上有您，便不怕任何风浪',
+                13: '⭐ 十三岁的少年，永远守护我的妈妈公主'
+            };
+            return messages[age] || `💗 ${age}岁的每一步，都有妈妈公主的温度 💗`;
+        }
+
+        function createPhotoCard(age) {
+            const fileName = getPhotoFileName(age);
+            const photoSrc = fileName;
+            const card = document.createElement('div');
+            card.className = 'photo-card';
+
+            const imgWrapper = document.createElement('div');
+            imgWrapper.className = 'img-wrapper';
+            const img = document.createElement('img');
+            img.alt = `${age}岁 · 文文的成长瞬间`;
+            img.loading = 'lazy';
+            img.src = photoSrc;
+
+            let isPlaceholderApplied = false;
+            const handleImageError = function() {
+                if (isPlaceholderApplied) return;
+                const svgData = createPlaceholderSVG(age);
+                const encodedSVG = 'data:image/svg+xml,' + encodeURIComponent(svgData);
+                img.src = encodedSVG;
+                isPlaceholderApplied = true;
+            };
+            img.onerror = handleImageError;
+            img.onload = function() {
+                if (isPlaceholderApplied && img.src.startsWith('data:image')) return;
+            };
+            imgWrapper.appendChild(img);
+
+            const cardInfo = document.createElement('div');
+            cardInfo.className = 'card-info';
+            const ageDiv = document.createElement('div');
+            ageDiv.className = 'age';
+            let ageDesc = '';
+            if (age <= 2) ageDesc = '🍼 小小宝贝';
+            else if (age <= 5) ageDesc = '🧸 萌趣时光';
+            else if (age <= 8) ageDesc = '🎒 小小少年';
+            else if (age <= 11) ageDesc = '🚲 快乐成长';
+            else ageDesc = '✨ 青春序章';
+            ageDiv.innerHTML = `${age}岁 <small>· ${ageDesc}</small>`;
+            
+            const momNoteDiv = document.createElement('div');
+            momNoteDiv.className = 'mom-note';
+            momNoteDiv.innerHTML = getMomMessageByAge(age);
+            
+            cardInfo.appendChild(ageDiv);
+            cardInfo.appendChild(momNoteDiv);
+            card.appendChild(imgWrapper);
+            card.appendChild(cardInfo);
+            return card;
+        }
+
+        function renderAlbum() {
+            const gridContainer = document.getElementById('photoGrid');
+            if (!gridContainer) return;
+            gridContainer.innerHTML = '';
+            const fragment = document.createDocumentFragment();
+            for (let age = START_AGE; age <= END_AGE; age++) {
+                fragment.appendChild(createPhotoCard(age));
+            }
+            gridContainer.appendChild(fragment);
+        }
+
+        // 等待主内容解锁后渲染也可以，但此时已在DOMContentLoaded前可能主内容隐藏但渲染依然发生，无影响
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', renderAlbum);
+        } else {
+            renderAlbum();
+        }
+
+        // 附加: 确保下载按钮链接正确 (已经添加)
+        const downloadLink = document.getElementById('downloadAppLink');
+        if (downloadLink) {
+            downloadLink.href = 'https://www.pgyer.com/xiaofang-ios';
+            downloadLink.target = '_blank';
+        }
+    })();
+</script>
+</body>
+</html>
